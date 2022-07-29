@@ -113,6 +113,12 @@ def get_midpoint(bbox):
     return cx, cy
 
 
+def get_bboxpoint(bbox, x=0.5, y=0.5):
+    """Return the point on the bbox at the given x, y coordinates."""
+    x1, y1, x2, y2 = bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax
+    return x1 + x*(x2-x1), y1 + y*(y2-y1)
+
+
 def get_points_inside_bbox(x, y, bbox):
     """Return the indices of points inside the given bbox."""
     x1, y1, x2, y2 = bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax
@@ -457,6 +463,7 @@ def adjust_text(
     save_prefix="",
     save_format="png",
     add_step_numbers=True,
+    arrow_bbox_pos=(0.5, 0.5),
     *args,
     **kwargs
 ):
@@ -732,7 +739,7 @@ def adjust_text(
             ax.annotate(
                 "",  # Add an arrow from the text to the point
                 xy=get_orig_coords(transform, orig_x[j], orig_y[j]),
-                xytext=transform.inverted().transform(get_midpoint(bbox)),
+                xytext=transform.inverted().transform(get_bboxpoint(bbox, arrow_bbox_pos[0], arrow_bbox_pos[1])),
                 arrowprops=ap,
                 xycoords=transform,
                 textcoords=transform,
